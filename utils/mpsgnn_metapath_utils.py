@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from relbench.modeling.nn import HeteroEncoder
 from collections import defaultdict
-from model.MPSGNN_Model import MPSGNN
+from model.MPSGNN_Model_old import MPSGNN
 from utils.utils import evaluate_performance, evaluate_on_full_train, test, train
 
 
@@ -995,7 +995,7 @@ def greedy_metapath_search_with_bags_learned_3(
                 src, _, dst = rel
                 if dst in [step[0] for step in path] or dst == node_type:  # avoid loops in met, avoid to return to the source node
                   continue
-                if rel == ('races', 'rev_f2p_raceId', 'standings') or rel == ('races', 'rev_f2p_raceId', 'qualifying'): # for some reasons it provokes side assertions
+                if rel == ('races', 'rev_f2p_raceId', 'standings'): # for some reasons it provokes side assertions
                   continue
 
                 node_embeddings = node_embeddings_dict.get(dst) #access at the value (Tensor[dst, hidden_dim]) for key node type "dst"
