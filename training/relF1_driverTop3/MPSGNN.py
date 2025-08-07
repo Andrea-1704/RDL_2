@@ -122,7 +122,7 @@ def train2():
         node_id='driverId',
         train_mask=train_mask_full,
         node_type='drivers',
-        L_max=4,
+        L_max=1,
         channels = hidden_channels,
         number_of_metapaths = 3,     
         out_channels = out_channels,
