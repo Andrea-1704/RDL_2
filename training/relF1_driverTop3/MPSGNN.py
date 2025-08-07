@@ -132,7 +132,7 @@ def train2():
         wd = wd,
         task = task,
         loss_fn= loss_fn, 
-        epochs = 100, 
+        epochs = 150, 
         tune_metric = tune_metric,
         higher_is_better= higher_is_better
     )
