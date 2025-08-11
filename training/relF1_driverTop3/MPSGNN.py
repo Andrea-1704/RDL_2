@@ -33,7 +33,7 @@ from data_management.data import loader_dict_fn, merge_text_columns_to_categoric
 from utils.mpsgnn_metapath_utils import binarize_targets # binarize_targets sarà usata qui
 from utils.utils import evaluate_performance, evaluate_on_full_train, test, train
 from utils.EarlyStopping import EarlyStopping
-from utils.mpsgnn_metapath_utils import greedy_metapath_search_with_bags_learned, greedy_metapath_search_with_bags_learned_2, greedy_metapath_search_with_bags_learned_3, beam_metapath_search_with_bags_learned_2
+from utils.mpsgnn_metapath_utils import greedy_metapath_search_with_bags_learned, greedy_metapath_search_with_bags_learned_2, greedy_metapath_search_with_bags_learned_3, beam_metapath_search_with_bags_learned, beam_metapath_search_with_bags_learned_2
 #from utils.mapping_utils import get_global_to_local_id_map
 
 
@@ -112,12 +112,10 @@ def train2():
         val_table=val_table,
         test_table=test_table
     )
-
     lr=1e-02
     wd=0
-    
-    
-    metapaths, metapath_counts = greedy_metapath_search_with_bags_learned_3(
+
+    metapaths, metapath_counts = beam_metapath_search_with_bags_learned_2(
         col_stats_dict = col_stats_dict_official,
         data=data_official,
         db= db_nuovo,
@@ -140,11 +138,12 @@ def train2():
     )
 
     print(f"\nfinal metapaths are {metapaths}\n")
-    print(f"\nmetapaths counts are {metapath_counts}\n")
 
+    print(f"\n metapaths counts are {metapath_counts}\n")
+    hidden_channels = 64
+    out_channels = 64
     lr=0.0001
     wd = 0
-
     model = MPSGNN(
         data=data_official,
         col_stats_dict=col_stats_dict_official,
@@ -156,22 +155,22 @@ def train2():
         final_out_channels=1,
     ).to(device)
 
-    # optimizer = torch.optim.Adam(
-    #   model.parameters(),
-    #   lr=lr,
-    #   weight_decay=wd
-    # )
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=wd)
+    optimizer = torch.optim.Adam(
+      model.parameters(),
+      lr=lr,
+      weight_decay=wd
+    )
+    #optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=wd)
 
     scheduler = CosineAnnealingLR(optimizer, T_max=25)
 
-    early_stopping = EarlyStopping(
-        patience=60,
-        delta=0.0,
-        verbose=True,
-        higher_is_better = True,
-        path="best_basic_model.pt"
-    )
+    # early_stopping = EarlyStopping(
+    #     patience=60,
+    #     delta=0.0,
+    #     verbose=True,
+    #     higher_is_better = True,
+    #     path="best_basic_model.pt"
+    # )
 
     
     best_val_metric = -math.inf 
@@ -203,11 +202,11 @@ def train2():
       
       print(f"Epoch: {epoch:02d}, Train {tune_metric}: {train_metrics[tune_metric]:.2f}, Validation {tune_metric}: {val_metrics[tune_metric]:.2f}, Test {tune_metric}: {test_metrics[tune_metric]:.2f}, LR: {current_lr:.6f}")
 
-      early_stopping(val_metrics[tune_metric], model)
+      # early_stopping(val_metrics[tune_metric], model)
 
-      if early_stopping.early_stop:
-          print(f"Early stopping triggered at epoch {epoch}")
-          break
+      # if early_stopping.early_stop:
+      #     print(f"Early stopping triggered at epoch {epoch}")
+      #     break
     print(f"best validation results: {best_val_metric}")
     print(f"best test results: {best_test_metric}")
 
