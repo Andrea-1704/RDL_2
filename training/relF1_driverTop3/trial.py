@@ -141,7 +141,7 @@ lr = lr
 wd = wd
 task = task
 loss_fn= loss_fn
-epochs = 100
+epochs = 200
 tune_metric = tune_metric
 higher_is_better= higher_is_better
 
@@ -152,7 +152,7 @@ model = MPSGNN(
     data=data,
     col_stats_dict=col_stats_dict,
     metadata=data.metadata(),
-    metapath_counts = {(('drivers', 'rev_f2p_driverId', 'results'),): 1},
+    metapath_counts = {(('drivers', 'rev_f2p_driverId', 'standings'),): 1},
     metapaths=[[('drivers', 'rev_f2p_driverId', 'standings')]],
     hidden_channels=hidden_channels,
     out_channels=out_channels,
