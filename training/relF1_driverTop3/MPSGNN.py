@@ -115,7 +115,7 @@ def train2():
     lr=1e-02
     wd=0
 
-    metapaths, metapath_counts = greedy_metapath_search_with_bags_learned(
+    metapaths, metapath_counts = greedy_metapath_search_with_bags_learned_2(
         col_stats_dict = col_stats_dict_official,
         data=data_official,
         db= db_nuovo,
